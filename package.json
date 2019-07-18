@@ -1,0 +1,29 @@
+{
+  "name": "socket-chat-server",
+  "version": "1.0.0",
+  "main": "dist/index.js",
+  "scripts": {
+    "build": "tslint --project . && tsc",
+    "dev": "cross-env NODE_ENV=development nodemon --watch src/ -e ts,tsx --exec ts-node src/core/server.ts",
+    "db": "mongod --dbpath=./dataBase"
+  },
+  "devDependencies": {
+    "@types/koa": "2.0.39",
+    "@types/koa-router": "7.0.23",
+    "cross-env": "5.0.5",
+    "nodemon": "1.12.0",
+    "ts-node": "3.3.0",
+    "tslint": "5.7.0",
+    "typescript": "2.5.2"
+  },
+  "dependencies": {
+    "@koa/cors": "2.2.3",
+    "@types/koa-bodyparser": "4.3.0",
+    "@types/koa__cors": "2.2.3",
+    "@types/mongoose": "5.5.3",
+    "koa": "2.3.0",
+    "koa-bodyparser": "4.2.1",
+    "koa-router": "7.2.1",
+    "mongoose": "5.5.12"
+  }
+}
