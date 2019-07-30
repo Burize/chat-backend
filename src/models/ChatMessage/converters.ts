@@ -1,4 +1,4 @@
-import { IChatMessageDocument } from './ChatMessage';
+import { IChatMessageDocument } from './chatMessage';
 import { IChatMessage } from '../../shared/types/models/chatMessage';
 import { isString, isNumber } from 'util';
 
@@ -13,32 +13,30 @@ export function convertMessageToResponse(message: IChatMessageDocument): IChatMe
 
 
 
-export function convertMessageFromResponse(message: unknown): IChatMessage {
+export function convertMessageFromResponse(_message: unknown): IChatMessage {
 
-  if (!(message instanceof Object)) {
-    throw Error(`message is not instanceof Object: ${message}`);
+  if (!(_message instanceof Object)) {
+    throw Error(`message is not instanceof Object: ${_message}`);
   }
 
-  const id = 'id' in message && message['id'] as unknown;
-  const userId = 'userId' in message && message['userId'] as unknown;
-  const body = 'body' in message && message['body'] as unknown;
-  const createdAt = 'createdAt' in message && message['createdAt'] as unknown;
+  const message = _message as Record<keyof IChatMessage, unknown>;
 
+  const { id, userId, body, createdAt } = message;
 
   if (!isString(id)) {
-    throw Error(`id is not string when convertMessageFromResponse: ${message}`);
+    throw Error(`id is not string when convertMessageFromResponse: ${id}`);
   }
 
   if (!isString(userId)) {
-    throw Error(`userId is not string when convertMessageFromResponse: ${message}`);
+    throw Error(`userId is not string when convertMessageFromResponse: ${userId}`);
   }
 
   if (!isString(body)) {
-    throw Error(`body is not string when convertMessageFromResponse: ${message}`);
+    throw Error(`body is not string when convertMessageFromResponse: ${body}`);
   }
 
   if (!isNumber(createdAt)) {
-    throw Error(`createdAt is not number when convertMessageFromResponse: ${message}`);
+    throw Error(`createdAt is not number when convertMessageFromResponse: ${createdAt}`);
   }
 
   return { id, userId, body, createdAt };

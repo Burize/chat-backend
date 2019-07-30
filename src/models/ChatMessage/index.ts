@@ -1,2 +1,2 @@
-export * from './ChatMessage';
+export * from './chatMessage';
 export * from './converters';

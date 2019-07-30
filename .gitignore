@@ -46,6 +46,7 @@ build
 static
 .expo
 dataBase
+assets
 
 # MacOS deps
 .DS_Store

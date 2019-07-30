@@ -26,24 +26,28 @@ class SocketManager {
   }
 
   private onMessage(sender: WebSocket, socketEvent: WebSocket.Data) {
+    try {
+      if (!isString(socketEvent)) {
+        throw 'socket event is not string';
+      }
 
-    if (!isString(socketEvent)) {
-      throw 'socket event is not string';
+      const event: IMessage = JSON.parse(socketEvent);
+      console.log('Incoming data: ' + event);
+
+
+      const message = this.controller.convertMessage(event.payload);
+      // message add to DB
+
+      const newMessageEvent: NewMessage = { type: 'new_message', payload: message };
+      this.server.clients.forEach((client) => {
+        if (client.readyState === WebSocket.OPEN && client !== sender) {
+          client.send(JSON.stringify(newMessageEvent));
+        }
+      });
+    } catch (error) {
+      console.error(error);
     }
 
-    const event: IMessage = JSON.parse(socketEvent);
-    console.log('Incoming data: ' + event);
-
-
-    const message = this.controller.convertMessage(event.payload);
-    // message add to DB
-
-    const newMessageEvent: NewMessage = { type: 'new_message', payload: message };
-    this.server.clients.forEach((client) => {
-      if (client.readyState === WebSocket.OPEN && client !== sender) {
-        client.send(JSON.stringify(newMessageEvent));
-      }
-    });
   }
 }
 

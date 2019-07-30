@@ -9,8 +9,8 @@ import { logger } from './logging';
 
 import SocketManager from '../services/socket/SocketManager';
 import ChatMessagesController from '../controllers/plain/ChatMessagesController';
-import { ChatMessageModel } from '../models/ChatMessage';
-// import { routes } from './routes';
+import { ChatMessageModel } from '../models/chatMessage';
+import { routes } from './routes';
 
 const app = new Koa();
 const server = http.createServer(app.callback());
@@ -19,10 +19,14 @@ SocketManager.init({ server, controller: new ChatMessagesController(ChatMessageM
 
 app.use(cors());
 app.use(logger);
-app.use(bodyparser());
-// app.use(routes);
+app.use(bodyparser(
+  {
+    jsonLimit: '50mb',
+  }
+));
+app.use(routes);
 
-server.listen(config.port, '10.0.0.100');
+server.listen(config.port, config.host);
 
 mongoose.connect(config.dbPath);
 

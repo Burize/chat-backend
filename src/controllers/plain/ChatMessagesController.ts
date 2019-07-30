@@ -1,6 +1,6 @@
 import { Model } from 'mongoose';
 
-import { IChatMessageDocument, convertMessageToResponse, convertMessageFromResponse } from '../../models/ChatMessage';
+import { IChatMessageDocument, convertMessageToResponse, convertMessageFromResponse } from '../../models/chatMessage';
 import { IChatMessageController } from '../../services/socket/namespace';
 import { IChatMessage } from '../../shared/types/models/chatMessage';
 
