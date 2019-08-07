@@ -17,7 +17,9 @@ export default class ChatMessagesController implements IChatMessageController {
     return allMessages.map(convertMessageToResponse) as any;
   }
 
-  public convertMessage(message: unknown): IChatMessage {
-    return convertMessageFromResponse(message);
+  public async saveMessage(message: unknown): Promise<IChatMessage> {
+    const parsedMessage = convertMessageFromResponse(message);
+    const createdMessage = await this.chatMessagesModel.create(parsedMessage);
+    return convertMessageToResponse(createdMessage);
   }
 }

@@ -1,12 +1,15 @@
+import * as fs from 'fs';
 import * as Router from 'koa-router';
 import * as base64Img from 'base64-img';
+import * as uuid from 'uuid';
+
 import { UserModel, convertCreationUserResponse, convertUserToResponse, convertAuthUserResponse, IUserDocument, convertPartialUserToResponse, convertUserUpdateFields } from '../../models/user';
 import { config } from '../../core/config';
 
 export const find = async (ctx: Router.IRouterContext) => {
   try {
-    const id = JSON.parse(ctx.params.id);
-    const user = await UserModel.findOne({ _id: id });
+    const id: string = ctx.params.id;
+    const user = await UserModel.findById(id);
     if (!user) {
       throw Error('User not found');
     }
@@ -40,9 +43,16 @@ export const auth = async (ctx: Router.IRouterContext) => {
 
 export const create = async (ctx: Router.IRouterContext) => {
   try {
-    const note = convertCreationUserResponse(ctx.request.body);
-    const createdNote = await UserModel.create(note);
-    const response = convertUserToResponse(createdNote);
+    const user = convertCreationUserResponse(ctx.request.body);
+
+    const duplicate = await UserModel.count({ phone: user.phone });
+
+    if (duplicate !== 0) {
+      throw Error('User with specified phone already exist');
+    }
+
+    const createdUser = await UserModel.create(user);
+    const response = convertUserToResponse(createdUser);
     ctx.body = JSON.stringify(response);
   } catch (e) {
     ctx.throw(400, e.message);
@@ -58,7 +68,7 @@ export const update = async (ctx: Router.IRouterContext) => {
       throw Error('Could not find user for update')
     }
 
-    const user = await UserModel.findOne({ _id: id });
+    const user = await UserModel.findById(id);
     const response = convertUserToResponse(user);
     ctx.body = JSON.stringify(response);
   } catch (e) {
@@ -71,17 +81,25 @@ export const updateAvatar = async (ctx: Router.IRouterContext) => {
     const id: string = ctx.params.id;
     const base64Avatar: string = ctx.request.body.avatar;
 
-    var filePath = base64Img.imgSync(base64Avatar, config.userAvatarPath, id);
+    const user = await UserModel.findById(id);
+    const oldAvatar = user.avatar;
 
+    if (!user) {
+      throw Error('Could not find user for update')
+    }
+
+    var filePath = base64Img.imgSync(base64Avatar, config.userAvatarPath, uuid());
+
+    // TODO: more better if avatar will be only name of file^ without local path
     const { n: modifiedCount } = await UserModel.updateOne({ _id: id }, { avatar: filePath }); // TODO: see for other way update
     if (!modifiedCount) {
       throw Error('Could not find user for update')
     }
 
-    // const user = await UserModel.findOne({ _id: id });
-    // const response = convertUserToResponse(user);
-    // ctx.body = JSON.stringify(response);
-    ctx.body = 200;
+    await fs.unlinkSync(oldAvatar);
+
+    const response = { avatar: filePath }
+    ctx.body = JSON.stringify(response);
   } catch (e) {
     ctx.throw(400, e);
   }

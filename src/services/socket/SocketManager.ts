@@ -1,6 +1,6 @@
 import * as WebSocket from 'ws';
 import { Server } from 'http';
-import { IChatMessageController, AllMessages, NewMessage, IMessage } from './namespace';
+import { IChatMessageController, AllMessages, NewMessage, IMessageEvent, SendedMessage } from './namespace';
 import { isString } from 'util';
 
 interface InitArgs {
@@ -19,29 +19,41 @@ class SocketManager {
       ws.on('message', this.onMessage.bind(this, ws));
 
       const allMessages = await this.controller.getAllMessages();
-      console.log('allMessages', allMessages);
       const message: AllMessages = { type: 'all_messages', payload: allMessages };
       ws.send(JSON.stringify(message));
     });
   }
 
-  private onMessage(sender: WebSocket, socketEvent: WebSocket.Data) {
+  private async onMessage(sender: WebSocket, socketEvent: WebSocket.Data) {
     try {
       if (!isString(socketEvent)) {
         throw 'socket event is not string';
       }
 
-      const event: IMessage = JSON.parse(socketEvent);
+      const event: IMessageEvent = JSON.parse(socketEvent);
       console.log('Incoming data: ' + event);
 
 
-      const message = this.controller.convertMessage(event.payload);
-      // message add to DB
+      const message = await this.controller.saveMessage(event.payload);
 
       const newMessageEvent: NewMessage = { type: 'new_message', payload: message };
+      const sendedMessageEvent: SendedMessage = { type: 'sended_message', payload: message };
+
+
+      const newMessageEventJSON = JSON.stringify(newMessageEvent);
+      const sendedMessageEventJSON = JSON.stringify(sendedMessageEvent);
+
+
       this.server.clients.forEach((client) => {
-        if (client.readyState === WebSocket.OPEN && client !== sender) {
-          client.send(JSON.stringify(newMessageEvent));
+
+        if (client.readyState !== WebSocket.OPEN) {
+          return;
+        }
+        if (client !== sender) {
+          client.send(newMessageEventJSON);
+        }
+        if (client === sender) {
+          client.send(sendedMessageEventJSON);
         }
       });
     } catch (error) {

@@ -7,13 +7,9 @@ import { config } from './config';
 
 const router = new Router();
 
-router.get(`${config.userAvatarPath}(.*)`, async ctx => koaSend(ctx, ctx.path, {
-  // root: config.userAvatarPath,
-  // immutable: true,
-  // maxAge: oneYearMs,
-}));
+router.get(`/${config.userAvatarPath}(.*)`, async ctx => koaSend(ctx, ctx.path));
 
-router.get('/note/:id', find);
+router.get('/user/:id', find);
 router.post('/user', create);
 router.post('/auth', auth);
 router.get('/members/:ids', findAll);

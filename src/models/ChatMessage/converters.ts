@@ -11,9 +11,7 @@ export function convertMessageToResponse(message: IChatMessageDocument): IChatMe
   return { id: _id, userId, createdAt, body };
 }
 
-
-
-export function convertMessageFromResponse(_message: unknown): IChatMessage {
+export function convertMessageFromResponse(_message: unknown): Omit<IChatMessage, 'id'> {
 
   if (!(_message instanceof Object)) {
     throw Error(`message is not instanceof Object: ${_message}`);
@@ -21,11 +19,7 @@ export function convertMessageFromResponse(_message: unknown): IChatMessage {
 
   const message = _message as Record<keyof IChatMessage, unknown>;
 
-  const { id, userId, body, createdAt } = message;
-
-  if (!isString(id)) {
-    throw Error(`id is not string when convertMessageFromResponse: ${id}`);
-  }
+  const { userId, body, createdAt } = message;
 
   if (!isString(userId)) {
     throw Error(`userId is not string when convertMessageFromResponse: ${userId}`);
@@ -39,5 +33,5 @@ export function convertMessageFromResponse(_message: unknown): IChatMessage {
     throw Error(`createdAt is not number when convertMessageFromResponse: ${createdAt}`);
   }
 
-  return { id, userId, body, createdAt };
+  return { userId, body, createdAt };
 }

@@ -35,17 +35,17 @@ export function convertCreationUserResponse(response: unknown): IUserModel {
     throw Error(`password is not string when convertMessageFromResponse: ${password}`);
   }
 
-  return { firstName, secondName, phone, password, hasAvatar: false };
+  return { firstName, secondName, phone, password, avatar: null };
 }
 
 export function convertUserToResponse(user: IUserDocument): IUser {
-  const { _id, firstName, secondName, phone, password, hasAvatar } = user;
-  return { id: _id, firstName, secondName, phone, password, hasAvatar }
+  const { _id, firstName, secondName, phone, password, avatar } = user;
+  return { id: _id, firstName, secondName, phone, password, avatar };
 }
 
 export function convertPartialUserToResponse(user: IUserDocument): IPartialUser {
-  const { _id, firstName, secondName, hasAvatar } = user;
-  return { id: _id, firstName, secondName, hasAvatar }
+  const { _id, firstName, secondName, avatar } = user;
+  return { id: _id, firstName, secondName, avatar }
 }
 
 export function convertAuthUserResponse(response: unknown): UserAuthFields {
