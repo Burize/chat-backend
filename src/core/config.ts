@@ -4,7 +4,8 @@ export interface IConfig {
   port: number;
   prettyLog: boolean;
   dbPath: string;
-  userAvatarPath: string
+  userAvatarPath: string;
+  privateKey: string;
 }
 
 const config: IConfig = {
@@ -12,7 +13,8 @@ const config: IConfig = {
   port: Number(process.env.NODE_PORT) || 3000,
   prettyLog: process.env.NODE_ENV == 'development',
   dbPath: 'mongodb://localhost/chat',
-  userAvatarPath: 'assets/avatars/'
+  userAvatarPath: 'assets/avatars/',
+  privateKey: 'please_dont_hack_me',
 };
 
 export { config };

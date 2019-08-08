@@ -1,6 +1,4 @@
 import * as mongoose from 'mongoose';
-import { isString } from 'util';
-import { IUser } from '../../shared/types/models/user';
 
 export interface IUserModel {
   firstName: string;

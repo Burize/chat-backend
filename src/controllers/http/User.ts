@@ -2,9 +2,25 @@ import * as fs from 'fs';
 import * as Router from 'koa-router';
 import * as base64Img from 'base64-img';
 import * as uuid from 'uuid';
+import * as jwt from 'jsonwebtoken';
 
 import { UserModel, convertCreationUserResponse, convertUserToResponse, convertAuthUserResponse, IUserDocument, convertPartialUserToResponse, convertUserUpdateFields } from '../../models/user';
 import { config } from '../../core/config';
+import { IAuthToken } from '../../models/auth';
+
+export const getAccount = async (ctx: Router.IRouterContext) => {
+  try {
+    const user = await UserModel.findById(ctx.state.userId);
+    if (!user) {
+      throw Error('User not found');
+    }
+
+    const response = convertUserToResponse(user);
+    ctx.body = JSON.stringify(response);
+  } catch (e) {
+    ctx.throw(404, e);
+  }
+};
 
 export const find = async (ctx: Router.IRouterContext) => {
   try {
@@ -34,8 +50,9 @@ export const auth = async (ctx: Router.IRouterContext) => {
     if (!user || user.password !== password) {
       throw Error('Wrong phone number or password');
     }
-    const response = convertUserToResponse(user);
-    ctx.body = JSON.stringify(response);
+
+    var token = jwt.sign({ userId: user.id }, config.privateKey);
+    ctx.body = token;
   } catch (e) {
     ctx.throw(401, e);
   }
@@ -52,8 +69,8 @@ export const create = async (ctx: Router.IRouterContext) => {
     }
 
     const createdUser = await UserModel.create(user);
-    const response = convertUserToResponse(createdUser);
-    ctx.body = JSON.stringify(response);
+    var token = jwt.sign({ userId: createdUser.id }, config.privateKey);
+    ctx.body = token;
   } catch (e) {
     ctx.throw(400, e.message);
   }
@@ -62,7 +79,15 @@ export const create = async (ctx: Router.IRouterContext) => {
 export const update = async (ctx: Router.IRouterContext) => {
   try {
     const fieldsForUpdate = convertUserUpdateFields(ctx.request.body);
-    const id = ctx.params.id;
+    const id = ctx.state.userId;
+
+    if (fieldsForUpdate.phone) {
+      const userWithSame = await UserModel.findOne({ phone: fieldsForUpdate.phone });
+      if (userWithSame) {
+        throw Error('The specified phone number is already in use')
+      }
+    }
+
     const { n: modifiedCount } = await UserModel.updateOne({ _id: id }, { ...fieldsForUpdate }); // TODO: see for other way update
     if (!modifiedCount) {
       throw Error('Could not find user for update')
@@ -78,7 +103,7 @@ export const update = async (ctx: Router.IRouterContext) => {
 
 export const updateAvatar = async (ctx: Router.IRouterContext) => {
   try {
-    const id: string = ctx.params.id;
+    const id: string = ctx.state.userId;
     const base64Avatar: string = ctx.request.body.avatar;
 
     const user = await UserModel.findById(id);
