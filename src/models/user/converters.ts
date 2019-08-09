@@ -35,7 +35,7 @@ export function convertCreationUserResponse(response: unknown): IUserModel {
     throw Error(`password is not string when convertMessageFromResponse: ${password}`);
   }
 
-  return { firstName, secondName, phone, password, avatar: null };
+  return { firstName, secondName, phone, password: password.trim(), avatar: null };
 }
 
 export function convertUserToResponse(user: IUserDocument): IUser {
@@ -65,7 +65,7 @@ export function convertAuthUserResponse(response: unknown): UserAuthFields {
     throw Error(`password is not string when convertMessageFromResponse: ${password}`);
   }
 
-  return { phone, password };
+  return { phone, password: password.trim() };
 }
 
 
@@ -77,7 +77,7 @@ export function convertUserUpdateFields(response: unknown): Partial<IUserModel> 
 
   const fields = response as { [key in keyof IUserModel]?: unknown };
 
-  const { firstName, secondName, phone, password } = fields;
+  const { firstName, secondName, phone } = fields;
 
   if (firstName && !isString(firstName)) {
     throw Error(`firstName is not string when convertMessageFromResponse: ${firstName}`);
@@ -91,11 +91,7 @@ export function convertUserUpdateFields(response: unknown): Partial<IUserModel> 
     throw Error(`phone is not string when convertMessageFromResponse: ${phone}`);
   }
 
-  if (password && !isString(password)) {
-    throw Error(`password is not string when convertMessageFromResponse: ${password}`);
-  }
-
-  const maybeFields = { firstName, secondName, phone, password } as Partial<IUserModel>;
+  const maybeFields = { firstName, secondName, phone } as Partial<IUserModel>;
   Object.keys(maybeFields).forEach((key: keyof IUserModel) => !maybeFields[key] && delete maybeFields[key]);
 
   return { ...maybeFields };

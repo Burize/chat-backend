@@ -6,7 +6,6 @@ import * as jwt from 'jsonwebtoken';
 
 import { UserModel, convertCreationUserResponse, convertUserToResponse, convertAuthUserResponse, IUserDocument, convertPartialUserToResponse, convertUserUpdateFields } from '../../models/user';
 import { config } from '../../core/config';
-import { IAuthToken } from '../../models/auth';
 
 export const getAccount = async (ctx: Router.IRouterContext) => {
   try {
@@ -88,7 +87,7 @@ export const update = async (ctx: Router.IRouterContext) => {
       }
     }
 
-    const { n: modifiedCount } = await UserModel.updateOne({ _id: id }, { ...fieldsForUpdate }); // TODO: see for other way update
+    const { n: modifiedCount } = await UserModel.updateOne({ _id: id }, { ...fieldsForUpdate });
     if (!modifiedCount) {
       throw Error('Could not find user for update')
     }
@@ -116,7 +115,7 @@ export const updateAvatar = async (ctx: Router.IRouterContext) => {
     var filePath = base64Img.imgSync(base64Avatar, config.userAvatarPath, uuid());
 
     // TODO: more better if avatar will be only name of file^ without local path
-    const { n: modifiedCount } = await UserModel.updateOne({ _id: id }, { avatar: filePath }); // TODO: see for other way update
+    const { n: modifiedCount } = await UserModel.updateOne({ _id: id }, { avatar: filePath });
     if (!modifiedCount) {
       throw Error('Could not find user for update')
     }
