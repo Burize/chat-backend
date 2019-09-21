@@ -4,21 +4,24 @@
 
 It is used in projects:
 - [Flutter chat](https://github.com/Burize/flutter-chat);
-- [PWA chat](https://github.com/Burize/PWA-RxJS-chat);
+- [PWA chat](https://github.com/Burize/PWA-RxJS-chat).
 
 
 ### Used features:
- * [KoaJS](https://github.com/koajs/koa) as rest framework
- * TypeScript
- * MongoDB
+ * [KoaJS](https://github.com/koajs/koa) as rest framework;
+ * [TypeScript](https://www.typescriptlang.org/);
+ * [MongoDB](https://www.mongodb.com/).
 
 ### Authentication
 User authentication and access to secure routes done via JWT token.
 
 ### Restore and start DataBase
 
+Firstly, you need install [MongoDB](https://www.mongodb.com/);
+
+Then, launch database via these commands: 
 ```bash
-# create local folder for data base 
+# create local folder for database 
 $ mkdir dataBase
 
 # restore data from backup
@@ -35,6 +38,8 @@ $  mongod --port 27017 --dbpath=./dataBase
 > 89138132077 / cyberpunk
 
 ### Start server
+
+Set appropriate host and port at `src/core/config.ts` 
 
 ```bash
 npm i
