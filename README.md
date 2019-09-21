@@ -4,6 +4,8 @@
 
 It is used in projects:
 - [Flutter chat](https://github.com/Burize/flutter-chat);
+- [PWA chat](https://github.com/Burize/PWA-RxJS-chat);
+
 
 ### Used features:
  * [KoaJS](https://github.com/koajs/koa) as rest framework
@@ -26,9 +28,11 @@ $ mongorestore backup
 $  mongod --port 27017 --dbpath=./dataBase
 ```
 
-> There are two initial users:
+> There are several initial users:
 > 89138131788 / black ice
 > 89138134455 / mankind
+> 89138136677 / scavenger
+> 89138132077 / cyberpunk
 
 ### Start server
 

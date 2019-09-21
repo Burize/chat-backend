@@ -4,7 +4,7 @@ import * as base64Img from 'base64-img';
 import * as uuid from 'uuid';
 import * as jwt from 'jsonwebtoken';
 
-import { UserModel, convertCreationUserResponse, convertUserToResponse, convertAuthUserResponse, IUserDocument, convertPartialUserToResponse, convertUserUpdateFields } from '../../models/user';
+import { UserModel, convertCreationUserResponse, convertUserToResponse, convertAuthUserResponse, IUserDocument, convertMemberToResponse, convertUserUpdateFields } from '../../models/user';
 import { config } from '../../core/config';
 
 export const getAccount = async (ctx: Router.IRouterContext) => {
@@ -38,7 +38,7 @@ export const find = async (ctx: Router.IRouterContext) => {
 export const findAll = async (ctx: Router.IRouterContext) => {
   const ids = JSON.parse(ctx.params.ids);
   const users = await UserModel.find({ _id: { $in: ids } });
-  const response = users.map(convertPartialUserToResponse);
+  const response = users.map(convertMemberToResponse);
   ctx.body = JSON.stringify(response);
 };
 
@@ -120,7 +120,9 @@ export const updateAvatar = async (ctx: Router.IRouterContext) => {
       throw Error('Could not find user for update')
     }
 
-    await fs.unlinkSync(oldAvatar);
+    if (oldAvatar) {
+      await fs.unlinkSync(oldAvatar);
+    }
 
     const response = { avatar: filePath }
     ctx.body = JSON.stringify(response);

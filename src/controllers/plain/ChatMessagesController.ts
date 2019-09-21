@@ -18,8 +18,8 @@ export default class ChatMessagesController implements IChatMessageController {
   }
 
   public async saveMessage(message: unknown): Promise<IChatMessage> {
-    const parsedMessage = convertMessageFromResponse(message);
-    const createdMessage = await this.chatMessagesModel.create(parsedMessage);
+    const { body, userId } = convertMessageFromResponse(message);
+    const createdMessage = await this.chatMessagesModel.create({ body, userId, createdAt: Date.now() });
     return convertMessageToResponse(createdMessage);
   }
 }

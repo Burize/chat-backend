@@ -1,4 +1,4 @@
-import { IUser, IPartialUser } from '../../shared/types/models/user';
+import { IUser, IMember, IUserResponse } from '../../shared/types/models/user';
 import { IUserModel, IUserDocument } from './User';
 import { isString } from 'util';
 
@@ -38,12 +38,12 @@ export function convertCreationUserResponse(response: unknown): IUserModel {
   return { firstName, secondName, phone, password: password.trim(), avatar: null };
 }
 
-export function convertUserToResponse(user: IUserDocument): IUser {
-  const { _id, firstName, secondName, phone, password, avatar } = user;
-  return { id: _id, firstName, secondName, phone, password, avatar };
+export function convertUserToResponse(user: IUserDocument): IUserResponse {
+  const { _id, firstName, secondName, phone, avatar } = user;
+  return { id: _id, firstName, secondName, phone, avatar };
 }
 
-export function convertPartialUserToResponse(user: IUserDocument): IPartialUser {
+export function convertMemberToResponse(user: IUserDocument): IMember {
   const { _id, firstName, secondName, avatar } = user;
   return { id: _id, firstName, secondName, avatar }
 }
