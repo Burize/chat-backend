@@ -21,14 +21,14 @@ Firstly, you need install [MongoDB](https://www.mongodb.com/);
 
 Then, launch database via these commands: 
 ```bash
-# create local folder for database 
-$ mkdir dataBase
+# create local folder for data base 
+mkdir dataBase
+
+# run mongo at created folder
+mongod --port 27017 --dbpath=./dataBase
 
 # restore data from backup
-$ mongorestore backup
-
-# run mongo at restored dump
-$  mongod --port 27017 --dbpath=./dataBase
+mongorestore backup
 ```
 
 > There are several initial users:
