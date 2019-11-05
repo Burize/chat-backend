@@ -32,7 +32,7 @@
     "koa-router": "7.2.1",
     "koa-send": "5.0.0",
     "koa-socket-2": "1.1.0",
-    "mongoose": "5.5.12",
+    "mongoose": "5.7.5",
     "uuid": "3.3.2",
     "ws": "7.1.0"
   }
